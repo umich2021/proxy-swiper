@@ -8,11 +8,11 @@ It uses Android's **Accessibility Service** (the same system screen readers and 
 
 ## Set up your own copy
 
-Everyone runs their own proxy with their own Claude access, preferences and device token. Nothing in this repo is tied to anyone else's account.
+Everyone runs their own proxy, with their own Claude access, preferences, and device token. Nothing here is tied to my account.
 
-1. **Proxy.** In `proxy/`, run `npm install` and then `npm run local`. That runs it on your PC through Claude Code on your own Claude subscription. You can also deploy it to Cloudflare with an API key, or to your own server; see [proxy/README.md](proxy/README.md). The first run creates `proxy/config/` from the templates in `proxy/config.example/`. Fill in `preferences.json`, `facts.json` and `voice_samples.md` with your own details; git ignores them. `npm run local` prints your device token.
-2. **App.** Open `android/` in Android Studio and press Run with your phone plugged in, or build it from the command line ([android/README.md](android/README.md)). You need Android 11 or newer.
-3. **Phone.** The app opens a setup guide. It walks you through allowing restricted settings (Android 13+ blocks accessibility for sideloaded apps until you do), turning on the accessibility service, and pasting your proxy URL and device token.
+1. **Proxy.** In `proxy/`, run `npm install` then `npm run local`. That runs it on your PC through Claude Code on your own Claude subscription. You can also put it on Cloudflare with an API key, or on your own server ([proxy/README.md](proxy/README.md)). The first run copies the templates from `proxy/config.example/` into `proxy/config/`. Fill in `preferences.json`, `facts.json`, and `voice_samples.md` with your stuff (git ignores them). `npm run local` prints your device token.
+2. **App.** Open `android/` in Android Studio and hit Run with your phone plugged in, or build it from the command line ([android/README.md](android/README.md)). Needs Android 11+.
+3. **Phone.** The app opens a setup guide that walks you through it: allowing restricted settings (Android 13+ blocks accessibility for sideloaded apps until you do), turning on the accessibility service, and pasting your proxy URL and token.
 4. Start in **Learn** mode and swipe by hand for a few days so it learns your taste. Then try Co-pilot.
 
 ## Docs

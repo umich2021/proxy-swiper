@@ -276,10 +276,10 @@ class OnboardingActivity : Activity() {
             label("autoDate", 15f, Palette.ACCENT, bold = true).apply { gravity = Gravity.CENTER }.mt(20),
             title("Your AI wingman\nfor Hinge").apply { gravity = Gravity.CENTER }.mt(4),
             label(
-                "It goes through profiles for you, likes the ones that fit your type, and writes a short comment on the best photo or prompt. Once someone replies, you take it from there.",
+                "It swipes Hinge for you. It likes the people who fit your type and writes a short comment on their best photo or prompt. Once they reply, you take over.",
                 16f, Palette.TEXT_2,
             ).apply { gravity = Gravity.CENTER }.mt(12),
-            label("Setup takes about 3 minutes", 13f, Palette.TEXT_2).apply { gravity = Gravity.CENTER }.mt(20),
+            label("Setup takes ~3 min", 13f, Palette.TEXT_2).apply { gravity = Gravity.CENTER }.mt(20),
         )
         return Page("welcome", view, primary = { "Get started" to ::next }, counted = false)
     }
@@ -297,12 +297,12 @@ class OnboardingActivity : Activity() {
 
         val view = column(
             title("How it works"),
-            label("You tap Start. autoDate opens Hinge and does this for each profile:", 16f, Palette.TEXT_2).mt(8),
-            step(StepIllustration.Kind.READ, "1", "Reads the profile", "Scrolls through photos and prompts at a normal human pace."),
-            step(StepIllustration.Kind.DECIDE, "2", "Scores the match", "Claude rates it against your preferences. Below your bar, it skips."),
-            step(StepIllustration.Kind.WRITE, "3", "Writes a comment", "Likes the best photo or prompt, with a short line that sounds like you."),
+            label("Tap Start and it opens Hinge. Then for every profile it:", 16f, Palette.TEXT_2).mt(8),
+            step(StepIllustration.Kind.READ, "1", "Reads the profile", "Scrolls the photos and prompts at human speed (not bot speed)."),
+            step(StepIllustration.Kind.DECIDE, "2", "Scores the match", "Claude scores it against your preferences. Under your bar, it skips."),
+            step(StepIllustration.Kind.WRITE, "3", "Writes a comment", "Likes the best photo or prompt with a short line in your voice."),
             card(
-                label(bold("It learns from you. " to true, "Start in Learn mode: you swipe yourself and it watches. When it agrees with you most of the time, let it drive." to false), 14f),
+                label(bold("It learns from you. " to true, "Start in Learn mode. You swipe, it watches and guesses. Once it agrees with you most of the time, let it drive." to false), 14f),
                 fill = Palette.ACCENT_SOFT,
             ).mt(24),
         )
@@ -317,11 +317,11 @@ class OnboardingActivity : Activity() {
         val restrictedSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
         restrictedHelp = card(
             label("Seeing “Restricted setting”?", 17f, Palette.TEXT, bold = true),
-            label("Android blocks this for apps that didn't come from the Play Store. You can unblock it:", 14f, Palette.TEXT_2).mt(4),
+            label("Android blocks this for apps that aren't from the Play Store. Easy fix:", 14f, Palette.TEXT_2).mt(4),
             SettingsDemoView(this, SettingsDemoView.Kind.RESTRICTED).apply { layoutParams = lp(14, width = minOf(dp(300), resources.displayMetrics.widthPixels - dp(72)), height = dp(220)).apply { gravity = Gravity.CENTER_HORIZONTAL } },
             stepLine("1", "Tap Open App info below."),
             stepLine("2", bold("Tap ⋮ in the top corner, then " to false, "Allow restricted settings" to true, ". Confirm with your PIN." to false)),
-            stepLine("3", "Come back here and turn autoDate on again."),
+            stepLine("3", "Come back and turn autoDate on again."),
             secondary("Open App info") {
                 startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
             }.mt(16),
@@ -329,7 +329,7 @@ class OnboardingActivity : Activity() {
 
         val view = column(
             title("Let autoDate tap\nfor you"),
-            label("autoDate uses Android's accessibility feature to read Hinge and tap like a person would. It only works inside Hinge.", 16f, Palette.TEXT_2).mt(8),
+            label("It uses Android's accessibility feature to read Hinge and tap like a person would. It doesn't do anything outside Hinge.", 16f, Palette.TEXT_2).mt(8),
             SettingsDemoView(this, SettingsDemoView.Kind.ACCESSIBILITY).apply { layoutParams = lp(20, width = minOf(dp(320), resources.displayMetrics.widthPixels - dp(40)), height = dp(250)).apply { gravity = Gravity.CENTER_HORIZONTAL } },
             stepLine("1", bold("Tap " to false, "Open settings" to true, " below." to false), top = 16),
             stepLine("2", bold("Find " to false, "autoDate" to true, " (often under Downloaded apps or Installed apps)." to false)),
@@ -340,7 +340,7 @@ class OnboardingActivity : Activity() {
         fun on() = ServiceSwitch.isOn(this)
         fun draw() {
             val ok = on()
-            accessStatus.text = if (ok) "✓  autoDate is on" else "Waiting for you to turn it on…"
+            accessStatus.text = if (ok) "✓  autoDate is on" else "Waiting on you to turn it on…"
             accessStatus.setTextColor(if (ok) Palette.GOOD else Palette.TEXT_2)
             accessStatus.background = Palette.rounded(if (ok) Palette.GOOD_SOFT else Palette.SURFACE, dp(16).toFloat(), if (ok) 0 else Palette.BORDER, if (ok) 0 else dp(1))
             if (ok) restrictedHelp.visibility = View.GONE
@@ -382,14 +382,14 @@ class OnboardingActivity : Activity() {
         val paste = quiet("Paste", Palette.ACCENT) {
             val clip = getSystemService(ClipboardManager::class.java).primaryClip
             val s = clip?.takeIf { it.itemCount > 0 }?.getItemAt(0)?.coerceToText(this)?.toString()?.trim()
-            if (s.isNullOrEmpty()) toastStatus("Nothing to paste. Copy the code first.", Palette.BAD) else tokenField.setText(s)
+            if (s.isNullOrEmpty()) toastStatus("Nothing to paste. Copy the token first.", Palette.BAD) else tokenField.setText(s)
         }.apply { minWidth = 0; minimumWidth = 0; setPadding(dp(14), 0, dp(14), 0) }
 
         val view = column(
-            title("Connect the brain"),
-            label("autoDate asks Claude to judge each profile and write the comments, through your own copy of the proxy in the repo's proxy/ folder. It holds your API key, preferences and voice samples.", 16f, Palette.TEXT_2).mt(8),
+            title("Connect your proxy"),
+            label("Claude judges each profile and writes the comments. It goes through your own copy of the proxy (proxy/ in the repo), which holds your Claude access, preferences, and voice samples.", 16f, Palette.TEXT_2).mt(8),
             card(
-                label(bold("No proxy yet? " to true, "Follow proxy/README.md. " to false, "npm run local" to true, " prints the link and access code (the DEVICE_TOKEN). On Cloudflare, the code is the DEVICE_TOKEN you set with wrangler secret put." to false), 14f),
+                label(bold("No proxy yet? " to true, "Follow proxy/README.md. " to false, "npm run local" to true, " prints the link and the token. On Cloudflare it's the DEVICE_TOKEN you set with wrangler secret put." to false), 14f),
                 fill = Palette.ACCENT_SOFT,
             ).mt(20),
             label("Proxy link", 14f, Palette.TEXT, bold = true).mt(22),
@@ -416,7 +416,7 @@ class OnboardingActivity : Activity() {
         config.proxyUrl = urlField.text.toString()
         config.deviceToken = tokenField.text.toString()
         urlField.setText(config.proxyUrl)
-        if (!config.brainConfigured) return toastStatus("Fill in both the link and the code.", Palette.BAD)
+        if (!config.brainConfigured) return toastStatus("Fill in both the link and the token.", Palette.BAD)
         connecting = true
         refreshButtons()
         toastStatus("Connecting…", Palette.TEXT_2)
@@ -430,8 +430,8 @@ class OnboardingActivity : Activity() {
                 } else {
                     val rejected = error is com.autodate.brain.BrainError && error.status in listOf(401, 403)
                     toastStatus(
-                        if (rejected) "The server is there, but it didn't accept that code. Check it was copied in full."
-                        else "Couldn't reach the server. Check the link and your internet. (${error.message})",
+                        if (rejected) "Reached the proxy, but it rejected that token. Make sure you copied all of it."
+                        else "Can't reach the proxy. Check the link and your internet. (${error.message})",
                         Palette.BAD,
                     )
                 }
@@ -449,13 +449,13 @@ class OnboardingActivity : Activity() {
                     orientation = LinearLayout.VERTICAL
                     addView(label("autoDate · now", 12f, Palette.TEXT_2))
                     addView(label("Session done: 6 likes sent", 15f, Palette.TEXT, bold = true))
-                    addView(label("2 new matches got an opener. Your turn!", 14f, Palette.TEXT_2))
+                    addView(label("2 new matches got an opener. Your turn", 14f, Palette.TEXT_2))
                 }.apply { layoutParams = LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) } },
             ),
         ).apply { elevation = dp(6).toFloat() }
         val view = column(
             title("Stay in the loop"),
-            label("autoDate tells you when a session ends, when it needs you, and when a match is ready for you to take over.", 16f, Palette.TEXT_2).mt(8),
+            label("Get pinged when a session ends, when it needs you, and when a match is ready for you to take over.", 16f, Palette.TEXT_2).mt(8),
             mock.mt(28),
         )
         return Page(
@@ -476,9 +476,9 @@ class OnboardingActivity : Activity() {
 
     private fun chooseMode(): Page {
         val options = listOf(
-            Triple(Mode.SHADOW, "Learn", "You swipe like normal. autoDate watches, guesses, and learns your type. Nothing is sent for you."),
-            Triple(Mode.APPROVE, "Co-pilot", "autoDate swipes. Before each like, you see its comment and tap send, edit, or skip."),
-            Triple(Mode.AUTO, "Autopilot", "autoDate swipes and sends on its own, within your daily limits."),
+            Triple(Mode.SHADOW, "Learn", "You swipe like normal. It watches, guesses, and learns your type. Nothing gets sent for you."),
+            Triple(Mode.APPROVE, "Co-pilot", "It swipes. Before each like you see the comment and tap send, edit, or skip."),
+            Triple(Mode.AUTO, "Autopilot", "It swipes and sends on its own, within your daily limits."),
         )
         if (config.mode !in options.map { it.first }) config.mode = Mode.SHADOW
         fun drawCards() = modeCards.forEach { (m, card) ->
@@ -488,7 +488,7 @@ class OnboardingActivity : Activity() {
         }
         val view = column(
             title("How hands-on?"),
-            label("You can change this any time on Home.", 16f, Palette.TEXT_2).mt(8),
+            label("You can switch this anytime on Home.", 16f, Palette.TEXT_2).mt(8),
         )
         options.forEachIndexed { i, (mode, name, body) ->
             val card = card(

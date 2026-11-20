@@ -4,10 +4,10 @@ import android.content.Context
 
 /** [drives]: the AI taps Hinge in a session. Inspect and Shadow only watch while you use Hinge. */
 enum class Mode(val title: String, val blurb: String, val drives: Boolean) {
-    INSPECT("Record", "For debugging: saves Hinge's screens when you tap the REC bubble.", false),
-    SHADOW("Learn", "You swipe like normal. autoDate watches and learns your type.", false),
-    APPROVE("Co-pilot", "autoDate swipes. You OK each like and comment before it's sent.", true),
-    AUTO("Autopilot", "autoDate swipes and sends on its own, within your limits.", true),
+    INSPECT("Record", "Debug only. Saves Hinge's screens when you tap the REC bubble.", false),
+    SHADOW("Learn", "You swipe like normal. It watches and learns your type.", false),
+    APPROVE("Co-pilot", "It swipes. You OK each like and comment before it's sent.", true),
+    AUTO("Autopilot", "It swipes and sends on its own, within your limits.", true),
 }
 
 class Config(context: Context) {

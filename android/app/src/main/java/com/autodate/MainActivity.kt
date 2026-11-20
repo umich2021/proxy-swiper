@@ -586,7 +586,7 @@ class MainActivity : Activity() {
             setPadding(dp(16), dp(16), dp(16), dp(12))
             background = Palette.rounded(Palette.ACCENT_SOFT, dp(20).toFloat())
             addView(text("Finish setting up", 17f, Palette.TEXT, bold = true))
-            addView(text("autoDate can't start until these are done.", 14f, Palette.TEXT_2).apply { setPadding(0, dp(2), 0, dp(4)) })
+            addView(text("You need these before you can start.", 14f, Palette.TEXT_2).apply { setPadding(0, dp(2), 0, dp(4)) })
             addView(setupList)
             layoutParams = spaced(16)
             visibility = View.GONE
@@ -686,8 +686,8 @@ class MainActivity : Activity() {
             runCatching { startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=$HINGE"))) }
         })
         if (!serviceEnabled()) add(Triple("Turn on autoDate in Accessibility", "Show me") { openGuide("access") })
-        if (!config.brainConfigured) add(Triple("Connect to the AI server", "Connect") { openGuide("brain") })
-        else if (brainReachable == false) add(Triple("Can't reach the AI server", "Fix") { openGuide("brain") })
+        if (!config.brainConfigured) add(Triple("Connect your proxy", "Connect") { openGuide("brain") })
+        else if (brainReachable == false) add(Triple("Can't reach your proxy", "Fix") { openGuide("brain") })
     }
 
     private fun openGuide(page: String? = null) {
@@ -741,7 +741,7 @@ class MainActivity : Activity() {
                 orb.state = com.autodate.ui.StartOrb.State.BLOCKED
                 orb.label = "Out of likes"
                 orb.sublabel = "Back at midnight"
-                orbHint.text = "Hinge's free likes reset daily. Switch to Learn to keep training."
+                orbHint.text = "Hinge's free likes reset every day. Switch to Learn to keep training it."
             }
             config.mode.drives -> {
                 orb.state = com.autodate.ui.StartOrb.State.READY
@@ -753,7 +753,7 @@ class MainActivity : Activity() {
                 orb.state = com.autodate.ui.StartOrb.State.READY
                 orb.label = "Open Hinge"
                 orb.sublabel = "${config.mode.title} mode"
-                orbHint.text = if (config.mode == Mode.SHADOW) "Swipe like you normally do. autoDate watches and learns." else "Tap the REC bubble on each screen you want saved."
+                orbHint.text = if (config.mode == Mode.SHADOW) "Swipe like you normally would. It watches and learns." else "Tap the REC bubble on each screen you want saved."
             }
         }
         servicePill.text = when {
@@ -812,7 +812,7 @@ class MainActivity : Activity() {
                 brainReachable = if (config.brainConfigured) status != null else null
                 if (status == null) {
                     costValue.text = "–"
-                    costSub.text = if (config.brainConfigured) "AI offline" else "AI cost today"
+                    costSub.text = if (config.brainConfigured) "Proxy offline" else "AI cost today"
                 } else {
                     val cap = status.optDouble("max_daily_usd")
                     if (!budgetField.hasFocus() && !cap.isNaN()) budgetField.setText("%.2f".format(cap))
