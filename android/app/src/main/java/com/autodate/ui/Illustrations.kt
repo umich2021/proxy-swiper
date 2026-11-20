@@ -297,7 +297,7 @@ class SwipeDemoView(context: Context) : LoopView(context, 3400, stillAt = 0.42f)
     }
 
     private companion object {
-        val OPENERS = listOf("ok but which taco spot wins?", "that hike looks unreal", "settle it: best dumplings?", "teach me the guitar riff?")
+        val OPENERS = listOf("wait is that your dog??", "whats the context here", "bet i can beat you at mini golf", "ive never tried this, take me?")
     }
 }
 
@@ -392,7 +392,7 @@ class StepIllustration(context: Context, private val kind: Kind) : LoopView(cont
     }
 
     private companion object {
-        val LINES = listOf("ok but which", "taco spot wins?")
+        val LINES = listOf("wait is that", "your dog??")
     }
 }
 
