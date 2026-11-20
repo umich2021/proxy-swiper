@@ -7,7 +7,7 @@ plugins {
 }
 
 // Bump appVersion in every commit that changes the app (rules in CLAUDE.md). MAJOR.MINOR.PATCH.
-val appVersion = "0.34.0"
+val appVersion = "0.35.0"
 
 // versionCode = minutes since 2026-01-01 at build time, so every new build installs over the last one,
 // whichever computer built it.

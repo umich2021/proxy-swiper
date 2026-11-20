@@ -50,7 +50,7 @@ class InboxRunner(private val s: AgentService) {
         }
         d.pause(1200, 2500)
         if (!d.nameNearTop(name)) {
-            Notifier.post(s, "autoDate", "Opened a chat but couldn't confirm it was $name; skipped.")
+            Notifier.post(s, "Proxy Swiper", "Opened a chat but couldn't confirm it was $name, so it skipped it.")
             d.back()
             return false
         }
@@ -68,7 +68,7 @@ class InboxRunner(private val s: AgentService) {
         }
         var text = opener?.text
         if (text == null) {
-            Notifier.post(s, "autoDate", "Couldn't write an opener for $name (${opener?.problem ?: "AI error"}). Your turn.")
+            Notifier.post(s, "Proxy Swiper", "Couldn't write an opener for $name (${opener?.problem ?: "AI error"}). Your turn.")
             d.back()
             return false
         }
@@ -95,7 +95,7 @@ class InboxRunner(private val s: AgentService) {
         d.pause(500, 1000)
         s.gestures.type(field, text)
         d.pause(900, 2200)
-        if (!d.nameNearTop(name)) throw Stopped("chat changed before sending; nothing sent")
+        if (!d.nameNearTop(name)) throw Stopped("chat changed before sending, nothing sent")
         if (!d.tap("chat_send")) throw Stopped("can't find the send button")
 
         val confirmed = awaitText(text.take(24))
@@ -103,7 +103,7 @@ class InboxRunner(private val s: AgentService) {
             s.db.recordOpener(name, s.db.profileByName(name)?.first, text)
             Notifier.post(s, "New match: $name", "Opener sent: “$text”. It's yours from here.")
         } else {
-            Notifier.post(s, "autoDate", "Tried to message $name but couldn't confirm it sent. Check the chat.")
+            Notifier.post(s, "Proxy Swiper", "Tried to message $name but couldn't confirm it sent. Check the chat.")
         }
         d.back()
         return confirmed

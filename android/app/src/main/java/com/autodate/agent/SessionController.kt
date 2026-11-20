@@ -101,7 +101,7 @@ class SessionController(private val s: AgentService) {
                     if (unknownScreens == 0) d.tap("discover_tab") // Hinge may open on another tab
                     if (++unknownScreens >= 3) {
                         s.inspector.capture("unknown_screen")
-                        throw Stopped("unknown screen (saved a capture for debugging)")
+                        throw Stopped("hit a screen it doesn't know (saved a capture for debugging)")
                     }
                     control.sleep(Jitter.logNormal(1500.0))
                 }
@@ -222,7 +222,7 @@ class SessionController(private val s: AgentService) {
             try {
                 return s.brain.judge(snap, examples, s.db.commentEdits(s.config.shadowCommentsSince)).also {
                     brainErrors = 0
-                    if (waiting) s.overlay.flash("AI budget raised, carrying on", 2500)
+                    if (waiting) s.overlay.flash("AI budget raised, keeping going", 2500)
                 }
             } catch (e: BrainError) {
                 if (e.status != 429) {
@@ -232,7 +232,7 @@ class SessionController(private val s: AgentService) {
                 waiting = true
                 s.overlay.setStatus(
                     "Out of AI budget for today (${e.message}).\n" +
-                        "Raise it in autoDate → Settings → Daily AI budget and I'll carry on. Tap to stop.",
+                        "Raise it in Proxy Swiper → Settings → Daily AI budget and it keeps going. Tap to stop.",
                 )
                 control.sleep(30_000)
             } catch (e: IOException) {
@@ -313,7 +313,7 @@ class SessionController(private val s: AgentService) {
         while (true) {
             val btn = s.reader.findLikeButton(target, snap.likeables, s.gestures, control)
                 ?: if (comment != null) return likeFailed("couldn't find ${target.label.take(40)}")
-                else s.reader.firstLikeButton(s.gestures, control)?.also { s.overlay.flash("Couldn't find ${target.kind}, liking the first one", 2500) }
+                else s.reader.firstLikeButton(s.gestures, control)?.also { s.overlay.flash("Couldn't find that ${target.kind}, liking the first one instead", 2500) }
                 ?: return likeFailed("no like button")
             d.tapNode(btn)
             when (s.reader.waitFor(control, 4000, Screen.COMMENT_SHEET, Screen.OUT_OF_LIKES)) {
@@ -463,7 +463,7 @@ class SessionController(private val s: AgentService) {
             Where.OTHER_PROFILE -> return false
             Where.LOST -> {
                 s.inspector.capture("skip_lost")
-                throw Stopped("can't get back to Discover to skip (saved a capture)")
+                throw Stopped("couldn't get back to Discover to skip (saved a capture)")
             }
         }
         skipCurrent()
@@ -502,6 +502,6 @@ class SessionController(private val s: AgentService) {
 
     private fun status() {
         val money = if (listCost > cost + 0.005) "≈\$%.2f API".format(listCost) else "\$%.2f".format(cost)
-        s.overlay.setStatus("${mode.name.lowercase()} · $seen seen · ${s.db.likesToday()}/${s.config.dailyLikeCap} ♥ · $money\ntap to stop")
+        s.overlay.setStatus("${mode.title.lowercase()} · $seen seen · ${s.db.likesToday()}/${s.config.dailyLikeCap} ♥ · $money\ntap to stop")
     }
 }

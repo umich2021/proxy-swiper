@@ -509,15 +509,15 @@ class SettingsDemoView(context: Context, private val kind: Kind) : LoopView(cont
         c.translate(-slide * width, 0f)
         header(c, l, r, "Accessibility")
         row(c, l, r, top, "TalkBack", "Off")
-        row(c, l, r, top + dp(46f), "Downloaded apps", "autoDate", highlight = if (tapRow > 0f) 1 - tapRow * 0.3f else 0f)
+        row(c, l, r, top + dp(46f), "Downloaded apps", "Proxy Swiper", highlight = if (tapRow > 0f) 1 - tapRow * 0.3f else 0f)
         row(c, l, r, top + dp(92f), "Display size and text", null)
         c.restore()
 
         c.save()
         c.translate((1 - slide) * width, 0f)
-        header(c, l, r, "autoDate")
+        header(c, l, r, "Proxy Swiper")
         val on = easeInOut(seg(t, 0.58f, 0.64f))
-        row(c, l, r, top, "Use autoDate", null)
+        row(c, l, r, top, "Use Proxy Swiper", null)
         toggle(c, r - dp(32f), top + dp(23f), on)
         text(c, "Reads Hinge's screen and taps", l + dp(16f), top + dp(70f), sp(11f), Palette.TEXT_2)
         text(c, "for you. Only works in Hinge.", l + dp(16f), top + dp(86f), sp(11f), Palette.TEXT_2)
@@ -538,7 +538,7 @@ class SettingsDemoView(context: Context, private val kind: Kind) : LoopView(cont
             p.alpha = (dlg * 255).toInt()
             round(dl, dt, dl + dw, dt + dp(104f), dp(16f), p, c)
             p.alpha = 255
-            text(c, "Allow autoDate to have", dl + dp(16f), dt + dp(26f), sp(12.5f), Palette.TEXT, bold = true, alpha = dlg)
+            text(c, "Allow Proxy Swiper to have", dl + dp(16f), dt + dp(26f), sp(12.5f), Palette.TEXT, bold = true, alpha = dlg)
             text(c, "full control of your device?", dl + dp(16f), dt + dp(43f), sp(12.5f), Palette.TEXT, bold = true, alpha = dlg)
             val pressed = seg(t, 0.82f, 0.86f)
             fill(if (pressed > 0f) Palette.ACCENT else Palette.ACCENT_SOFT)
@@ -580,7 +580,7 @@ class SettingsDemoView(context: Context, private val kind: Kind) : LoopView(cont
         fill(Palette.ACCENT)
         c.drawCircle(l + width / 2, dp(92f), dp(20f), p)
         heart(c, l + width / 2, dp(94f), dp(10f), 0xFFFFFFFF.toInt())
-        text(c, "autoDate", l + width / 2, dp(132f), sp(14f), Palette.TEXT, bold = true, align = Paint.Align.CENTER)
+        text(c, "Proxy Swiper", l + width / 2, dp(132f), sp(14f), Palette.TEXT, bold = true, align = Paint.Align.CENTER)
         fill(line)
         round(l + dp(16f), dp(150f), r - dp(16f), dp(156f), dp(3f), p, c)
         round(l + dp(16f), dp(166f), r - dp(60f), dp(172f), dp(3f), p, c)
@@ -846,5 +846,26 @@ class NavIcon(context: Context, private val kind: Kind) : View(context) {
                 }
             }
         }
+    }
+}
+
+/** The usual media pause symbol (two bars) in a soft circle. */
+class PauseIcon(context: Context) : View(context) {
+    private val p = Paint(Paint.ANTI_ALIAS_FLAG)
+    private val rect = RectF()
+
+    init { contentDescription = "Pause" }
+
+    override fun onDraw(c: Canvas) {
+        val d = resources.displayMetrics.density
+        val cx = width / 2f; val cy = height / 2f
+        p.color = Palette.ACCENT_SOFT
+        c.drawCircle(cx, cy, min(width, height) / 2f, p)
+        p.color = Palette.ACCENT
+        val bw = 3.5f * d; val bh = 12f * d; val gap = 3f * d
+        rect.set(cx - gap / 2 - bw, cy - bh / 2, cx - gap / 2, cy + bh / 2)
+        c.drawRoundRect(rect, d, d, p)
+        rect.set(cx + gap / 2, cy - bh / 2, cx + gap / 2 + bw, cy + bh / 2)
+        c.drawRoundRect(rect, d, d, p)
     }
 }

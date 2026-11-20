@@ -510,14 +510,14 @@ class Overlay(private val service: AccessibilityService) {
     )
 }
 
-/** Posts a notification on the "autoDate" channel. */
+/** Posts a notification on the app's channel. */
 object Notifier {
     private const val CHANNEL = "autodate"
 
     fun post(context: Context, title: String, text: String) {
         val nm = context.getSystemService(android.app.NotificationManager::class.java)
         if (nm.getNotificationChannel(CHANNEL) == null) {
-            nm.createNotificationChannel(android.app.NotificationChannel(CHANNEL, "autoDate", android.app.NotificationManager.IMPORTANCE_DEFAULT))
+            nm.createNotificationChannel(android.app.NotificationChannel(CHANNEL, "Proxy Swiper", android.app.NotificationManager.IMPORTANCE_DEFAULT))
         }
         val n = android.app.Notification.Builder(context, CHANNEL)
             .setSmallIcon(android.R.drawable.ic_dialog_info)

@@ -273,7 +273,7 @@ class OnboardingActivity : Activity() {
         val hero = SwipeDemoView(this)
         val view = column(
             hero.apply { layoutParams = lp(8, height = dp(330)) },
-            label("autoDate", 15f, Palette.ACCENT, bold = true).apply { gravity = Gravity.CENTER }.mt(20),
+            label("Proxy Swiper", 15f, Palette.ACCENT, bold = true).apply { gravity = Gravity.CENTER }.mt(20),
             title("Your AI wingman\nfor Hinge").apply { gravity = Gravity.CENTER }.mt(4),
             label(
                 "It swipes Hinge for you. It likes the people who fit your type and writes a short comment on their best photo or prompt. Once they reply, you take over.",
@@ -322,26 +322,26 @@ class OnboardingActivity : Activity() {
             SettingsDemoView(this, SettingsDemoView.Kind.RESTRICTED).apply { layoutParams = lp(14, width = minOf(dp(300), resources.displayMetrics.widthPixels - dp(72)), height = dp(220)).apply { gravity = Gravity.CENTER_HORIZONTAL } },
             stepLine("1", "Tap Open App info below."),
             stepLine("2", bold("Tap ⋮ in the top corner, then " to false, "Allow restricted settings" to true, ". Confirm with your PIN." to false)),
-            stepLine("3", "Come back and turn autoDate on again."),
+            stepLine("3", "Come back and turn Proxy Swiper on again."),
             secondary("Open App info") {
                 startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:$packageName")))
             }.mt(16),
         ).apply { visibility = View.GONE }
 
         val view = column(
-            title("Let autoDate tap\nfor you"),
+            title("Let it tap\nfor you"),
             label("It uses Android's accessibility feature to read Hinge and tap like a person would. It doesn't do anything outside Hinge.", 16f, Palette.TEXT_2).mt(8),
             SettingsDemoView(this, SettingsDemoView.Kind.ACCESSIBILITY).apply { layoutParams = lp(20, width = minOf(dp(320), resources.displayMetrics.widthPixels - dp(40)), height = dp(250)).apply { gravity = Gravity.CENTER_HORIZONTAL } },
             stepLine("1", bold("Tap " to false, "Open settings" to true, " below." to false), top = 16),
-            stepLine("2", bold("Find " to false, "autoDate" to true, " (often under Downloaded apps or Installed apps)." to false)),
-            stepLine("3", bold("Turn on " to false, "Use autoDate" to true, ", then tap " to false, "Allow" to true, "." to false)),
+            stepLine("2", bold("Find " to false, "Proxy Swiper" to true, " (usually under Downloaded apps or Installed apps)." to false)),
+            stepLine("3", bold("Turn on " to false, "Use Proxy Swiper" to true, ", then tap " to false, "Allow" to true, "." to false)),
             accessStatus.mt(20),
             restrictedHelp.mt(16),
         )
         fun on() = ServiceSwitch.isOn(this)
         fun draw() {
             val ok = on()
-            accessStatus.text = if (ok) "✓  autoDate is on" else "Waiting on you to turn it on…"
+            accessStatus.text = if (ok) "✓  Proxy Swiper is on" else "Waiting on you to turn it on…"
             accessStatus.setTextColor(if (ok) Palette.GOOD else Palette.TEXT_2)
             accessStatus.background = Palette.rounded(if (ok) Palette.GOOD_SOFT else Palette.SURFACE, dp(16).toFloat(), if (ok) 0 else Palette.BORDER, if (ok) 0 else dp(1))
             if (ok) restrictedHelp.visibility = View.GONE
@@ -448,7 +448,7 @@ class OnboardingActivity : Activity() {
                 badge("♥\uFE0E", fill = Palette.ACCENT, ink = Palette.SURFACE, size = 36),
                 LinearLayout(this).apply {
                     orientation = LinearLayout.VERTICAL
-                    addView(label("autoDate · now", 12f, Palette.TEXT_2))
+                    addView(label("Proxy Swiper · now", 12f, Palette.TEXT_2))
                     addView(label("Session done: 6 likes sent", 15f, Palette.TEXT, bold = true))
                     addView(label("2 new matches got an opener. Your turn", 14f, Palette.TEXT_2))
                 }.apply { layoutParams = LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) } },
@@ -519,7 +519,7 @@ class OnboardingActivity : Activity() {
             title("You're all set").apply { gravity = Gravity.CENTER },
             label("Here's how a session goes:", 16f, Palette.TEXT_2).apply { gravity = Gravity.CENTER }.mt(6),
             card(
-                stepLine("1", bold("Tap the big " to false, "Start" to true, " button on Home. Hinge opens and autoDate takes over." to false), top = 0),
+                stepLine("1", bold("Tap the big " to false, "Start" to true, " button on Home. Hinge opens and it takes over from there." to false), top = 0),
                 stepLine("2", bold("A " to false, "floating bubble" to true, " shows what it's doing and how many likes are left. Drag it anywhere." to false), top = 14),
                 stepLine("3", bold("To stop, " to false, "tap the bubble or press volume-down." to true) , top = 14),
                 stepLine("4", "Check History to see every decision and why.", top = 14),

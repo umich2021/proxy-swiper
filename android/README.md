@@ -1,4 +1,4 @@
-# autoDate Android app
+# Proxy Swiper Android app
 
 ## Build and install
 
@@ -16,8 +16,8 @@ Needs Android 11 or newer on the phone.
 
 The app opens a setup guide that walks you through each step. You can replay it from Settings → App.
 
-1. Android 13+ only: Settings → Apps → autoDate → ⋮ → Allow restricted settings. The menu item only shows up after you've tried to turn on accessibility once
-2. Accessibility → autoDate → Use autoDate → Allow
+1. Android 13+ only: Settings → Apps → Proxy Swiper → ⋮ → Allow restricted settings. The menu item only shows up after you've tried to turn on accessibility once
+2. Accessibility → Proxy Swiper → Use Proxy Swiper → Allow
 3. Paste your proxy link and `DEVICE_TOKEN` ([../proxy/README.md](../proxy/README.md))
 
 Optional, so accessibility comes back on by itself after app updates:

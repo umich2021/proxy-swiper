@@ -1,4 +1,4 @@
-# autoDate proxy
+# Proxy Swiper proxy
 
 The small server the phone asks "like or skip?". It holds your AI access, your preferences, and the prompts, checks every message before it goes out, and stops for the day once you hit your spending cap.
 

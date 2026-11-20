@@ -162,7 +162,7 @@ class AgentService : AccessibilityService() {
     fun startSession(): String? {
         if (sessionRunning) return "A session is already running"
         if (config.mode != Mode.APPROVE && config.mode != Mode.AUTO) return "Switch to Co-pilot or Autopilot to start a session"
-        if (!config.brainConfigured) return "Set the proxy URL and device token first"
+        if (!config.brainConfigured) return "Set the proxy link and device token first"
         likeCapMessage()?.let { return it }
         control.reset()
         overlay.keepScreenOn(true)
@@ -223,8 +223,8 @@ class AgentService : AccessibilityService() {
             Mode.INSPECT -> if (config.autoCapture) "REC · auto" else "REC"
             Mode.SHADOW -> "Learn · tap to ask AI"
             Mode.APPROVE, Mode.AUTO ->
-                if (::db.isInitialized && db.likesToday() >= config.dailyLikeCap) "${config.mode.name.lowercase()} · out of likes today"
-                else "${config.mode.name.lowercase()} · tap to start"
+                if (::db.isInitialized && db.likesToday() >= config.dailyLikeCap) "${config.mode.title.lowercase()} · out of likes today"
+                else "${config.mode.title.lowercase()} · tap to start"
         },
     )
 

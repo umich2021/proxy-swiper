@@ -74,7 +74,6 @@ class MainActivity : Activity() {
     private lateinit var historySummary: TextView
     private lateinit var historyList: LinearLayout
     private lateinit var historyFilter: Button
-    private lateinit var changesList: LinearLayout
     private lateinit var reviewPage: ReviewPage
     private var disagreementsOnly = false
 
@@ -121,12 +120,12 @@ class MainActivity : Activity() {
 
         val home = buildHome()
 
-        val history = page("History", "Notes, then the swipe log").apply {
+        val history = page("History", "Every profile it saw and what it decided").apply {
             profileNotes()?.let { notes ->
                 addView(card("Profile notes", text(notes, 14f, Palette.TEXT).apply { setLineSpacing(dp(2).toFloat(), 1f) }))
             }
             addView(collapsibleCard(
-                "Show history",
+                "Swipe log",
                 historySummary,
                 historyFilter.withMargin(top = 12),
                 historyList,
@@ -134,56 +133,51 @@ class MainActivity : Activity() {
         }
 
         reviewPage = ReviewPage(this)
-        val review = page("Review", "Learn your physical type from saved profiles, offline").apply {
+        val review = page("Review", "Rate faces so it learns your type. Just for you, stays offline").apply {
             setPadding(paddingLeft, paddingTop, paddingRight, dp(8))
             addView(reviewPage, LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f).apply { topMargin = dp(12) })
         }
 
-        changesList = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
-        val changeWhat = plainField("What changed, e.g. Dating intentions")
-        val changeBefore = plainField("Before (optional)")
-        val changeAfter = plainField("After, or the text you added", multiLine = true)
-
-        val settings = page("Settings", "Tap a section to expand it").apply {
+        val settings = page("Settings", "Tap a section to open it").apply {
             addView(collapsibleCard(
-                "Brain (proxy)",
-                fieldLabel("Brain URL"),
+                "Proxy",
+                fieldLabel("Proxy link"),
                 urlField,
-                hint("Over USB: http://localhost:8787 (adb reverse). On Wi-Fi: http://<your-pc-ip>:8787"),
+                hint("Same Wi-Fi: http://<your computer's IP>:8787. Over USB: run adb reverse tcp:8787 tcp:8787, then http://localhost:8787"),
                 fieldLabel("Device token", top = 16),
                 textField("Paste DEVICE_TOKEN", config.deviceToken, secret = true) { config.deviceToken = it },
                 secondaryButton("Test connection") { testConnection() }.withMargin(top = 16),
                 connection,
                 fieldLabel("Daily AI budget (\$)", top = 20),
                 budgetField,
-                hint("Sessions stop once a day's AI use, counted at API prices, reaches this. The day resets at midnight UTC (4 or 5 PM Pacific). Up to \$50."),
+                hint("Sessions stop once a day's AI use hits this, counted at API prices (even on a subscription). Resets at midnight UTC, which is 4 or 5 PM Pacific. Max \$50."),
                 secondaryButton("Set budget") { setBudget() }.withMargin(top = 12),
                 budgetResult,
             ))
             addView(collapsibleCard(
                 "Limits",
-                numberRow("Likes per day", "Free Hinge allows about 8", config.dailyLikeCap) { config.dailyLikeCap = it },
+                numberRow("Likes per day", "Free Hinge gives you about 8", config.dailyLikeCap) { config.dailyLikeCap = it },
                 divider(),
                 numberRow("Profiles per session", null, config.sessionProfileCap) { config.sessionProfileCap = it },
                 divider(),
                 numberRow("Minutes per session", null, config.sessionMinutes) { config.sessionMinutes = it },
                 divider(),
-                numberRow("Looks floor", "Skip a visible face under this (1-10). 5 = typical profile. Higher = pickier", config.looksMin) {
+                numberRow("Looks floor", "Skips a face under this, 1 to 10. 5 is a typical profile. Higher is pickier", config.looksMin) {
                     config.looksMin = it.coerceIn(1, 10)
                 },
                 divider(),
-                numberRow("Like score", "Only like at this AI score or higher (1-100). Higher = pickier", config.likeThreshold) {
+                numberRow("Like score", "Only likes at this score or higher, 1 to 100. Higher is pickier", config.likeThreshold) {
                     // Untouched, it keeps following the proxy; once changed, the phone value sticks.
                     if (it != config.likeThreshold || config.myLikeThreshold > 0) config.myLikeThreshold = it
                 },
                 divider(),
-                switchRow("Ask me when unsure", "Off: anything under the like cutoff is skipped", config.askWhenUnsure) { config.askWhenUnsure = it },
+                switchRow("Ask me when unsure", "Shows you the close calls. Off, it just skips them", config.askWhenUnsure) { config.askWhenUnsure = it },
                 divider(),
-                switchRow("Like even if the comment fails", "Off: skips the profile instead of liking without its comment", config.likeIfCommentFails) { config.likeIfCommentFails = it },
+                switchRow("Like even if the comment fails", "If the comment won't type, it still sends the like. Off, it skips the profile", config.likeIfCommentFails) { config.likeIfCommentFails = it },
                 divider(),
-                switchRow("Cheap Haiku pre-filter", "Skips obvious no's before the full model", config.prefilter) { config.prefilter = it },
+                switchRow("Cheap pre-filter", "A cheaper model skips the obvious no's first. Saves money", config.prefilter) { config.prefilter = it },
                 divider(),
-                switchRow("Send openers after a session", "Writes a first message to new matches", config.runInbox) { config.runInbox = it },
+                switchRow("Send openers after a session", "Writes a first message to your new matches", config.runInbox) { config.runInbox = it },
                 primaryButton("Save settings") {
                     save()
                     toast("Saved")
@@ -192,7 +186,7 @@ class MainActivity : Activity() {
             ))
             addView(collapsibleCard(
                 "Hinge notifications",
-                hint("Keeps Hinge's message notifications, removes the rest (likes, matches, promos), and shows how many messages are unread. Leave Hinge's notifications on in Android for this to work."),
+                hint("Keeps Hinge's message notifications and clears the rest (likes, matches, promos), plus shows how many messages are unread. Hinge's own notifications need to stay on for this."),
                 notifyStatus,
                 secondaryButton("Notification access") { startActivity(Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)) }.withMargin(top = 8),
             ))
@@ -202,27 +196,6 @@ class MainActivity : Activity() {
                 secondaryButton("Export data to Downloads") { export() }.withMargin(top = 12),
                 secondaryButton("Delete captures & images", danger = true) { confirmDelete() }.withMargin(top = 8),
                 dataResult,
-            ))
-            addView(collapsibleCard(
-                "Profile changes",
-                changeWhat,
-                changeBefore.withMargin(top = 8),
-                changeAfter.withMargin(top = 8),
-                primaryButton("Add") {
-                    val what = changeWhat.text.toString().trim()
-                    if (what.isEmpty()) return@primaryButton toast("Say what changed first")
-                    val before = changeBefore.text.toString().trim().ifEmpty { null }
-                    val after = changeAfter.text.toString().trim().ifEmpty { null }
-                    thread {
-                        Db(this@MainActivity).use { it.addProfileChange(what, before, after) }
-                        runOnUiThread {
-                            listOf(changeWhat, changeBefore, changeAfter).forEach { it.text.clear() }
-                            loadChanges()
-                        }
-                    }
-                }.withMargin(top = 12),
-                hint("Log it when it goes live on Hinge. Each change counts likes sent and new matches until the next one."),
-                changesList,
             ))
             addView(collapsibleCard(
                 "App",
@@ -298,7 +271,6 @@ class MainActivity : Activity() {
         refresh()
         if (currentTab == TAB_HISTORY) loadHistory()
         if (currentTab == TAB_REVIEW) reviewPage.reload()
-        if (currentTab == TAB_SETTINGS) loadChanges()
     }
 
     private fun showTab(i: Int) {
@@ -314,60 +286,6 @@ class MainActivity : Activity() {
         }
         if (i == TAB_HISTORY) loadHistory()
         if (i == TAB_REVIEW) reviewPage.reload()
-        if (i == TAB_SETTINGS) loadChanges()
-    }
-
-    private fun loadChanges() {
-        thread {
-            val rows = Db(this).use { it.profileChanges() }
-            runOnUiThread {
-                changesList.removeAllViews()
-                if (rows.isEmpty()) changesList.addView(hint("No changes logged yet.").withMargin(top = 12))
-                rows.forEach { changesList.addView(changeCard(it)) }
-            }
-        }
-    }
-
-    private fun changeCard(c: Db.ProfileChange) = LinearLayout(this).apply {
-        orientation = LinearLayout.VERTICAL
-        setPadding(dp(14), dp(12), dp(14), dp(12))
-        background = Palette.rounded(Palette.SURFACE, dp(14).toFloat(), if (c.until == null) Palette.ACCENT else Palette.BORDER, dp(if (c.until == null) 2 else 1))
-        layoutParams = spaced(12)
-
-        val fmt = java.text.SimpleDateFormat("MMM d, h:mm a", java.util.Locale.getDefault())
-        val end = c.until ?: System.currentTimeMillis()
-        val days = (end - c.ts) / 86_400_000.0
-        val span = if (days < 1) "%.0f hours".format(days * 24) else "%.1f days".format(days)
-        addView(LinearLayout(context).apply {
-            orientation = LinearLayout.HORIZONTAL
-            gravity = Gravity.CENTER_VERTICAL
-            addView(text(c.what, 16f, Palette.TEXT, bold = true), LinearLayout.LayoutParams(0, -2, 1f))
-            addView(text(if (c.until == null) "running" else "replaced", 12f, if (c.until == null) Palette.ACCENT else Palette.TEXT_2, bold = true))
-        })
-        addView(text("${fmt.format(java.util.Date(c.ts))} · $span", 12f, Palette.TEXT_2).apply { setPadding(0, dp(2), 0, 0) })
-        c.before?.let { addView(text("Before: $it", 14f, Palette.TEXT_2).apply { setPadding(0, dp(8), 0, 0) }) }
-        c.after?.let { addView(text(if (c.before != null) "After: $it" else "“$it”", 14f, Palette.TEXT).apply { setPadding(0, dp(4), 0, 0) }) }
-        val perDay = if (days >= 1) " · %.1f matches a day".format(c.matches / days) else ""
-        addView(text("Since then: ${c.likesSent} likes sent · ${c.matches} new matches$perDay", 14f, Palette.TEXT, bold = true).apply { setPadding(0, dp(8), 0, 0) })
-        addView(secondaryButton("Remove", danger = true) {
-            android.app.AlertDialog.Builder(this@MainActivity)
-                .setMessage("Remove “${c.what}” from the log?")
-                .setPositiveButton("Remove") { _, _ -> thread { Db(this@MainActivity).use { it.deleteProfileChange(c.id) }; runOnUiThread { loadChanges() } } }
-                .setNegativeButton("Cancel", null)
-                .show()
-        }.withMargin(top = 10))
-    }
-
-    private fun plainField(hint: String, multiLine: Boolean = false) = EditText(this).apply {
-        this.hint = hint
-        textSize = 15f
-        setTextColor(Palette.TEXT)
-        setHintTextColor(Palette.TEXT_2)
-        inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES or (if (multiLine) InputType.TYPE_TEXT_FLAG_MULTI_LINE else 0)
-        isSingleLine = !multiLine
-        if (multiLine) minLines = 2
-        background = fieldBackground()
-        setPadding(dp(12), dp(12), dp(12), dp(12))
     }
 
     private fun loadHistory() {
@@ -413,13 +331,13 @@ class MainActivity : Activity() {
         } else {
             val pct = a.agreed * 100 / a.total
             val precision = if (a.aiLikes > 0) "${a.aiLikesYouLiked * 100 / a.aiLikes}% (${a.aiLikesYouLiked} of ${a.aiLikes})" else "no AI likes yet"
-            "AI agrees with you $pct% · ${a.total} Learn mode swipes. When the AI says like, you liked too: $precision."
+            "It agrees with you $pct% of the time (${a.total} Learn mode swipes). When it says like, you liked too: $precision."
         }
         val voice = if (comments.sent == 0) {
             "No Co-pilot comments sent yet."
         } else {
             val kept = comments.kept * 100 / comments.sent
-            "Comments: ${comments.sent} sent, $kept% unchanged, ${comments.slight} slight edits, ${comments.rewrite} rewrites."
+            "Comments: ${comments.sent} sent, $kept% unchanged, ${comments.slight} small edits, ${comments.rewrite} rewrites."
         }
         return twoLine(swipe, voice)
     }
@@ -440,7 +358,7 @@ class MainActivity : Activity() {
 
         val ai = "AI ${if (r.aiLike) "like" else "skip"} ${r.score}"
         val line = when (r.finalAction) {
-            null -> "$ai · no final action recorded"
+            null -> "$ai · no final call saved"
             else -> {
                 val who = if (r.mode == Mode.SHADOW.name) "You" else "Result"
                 "$ai · $who ${r.finalAction} ${if (r.override) "✗" else "✓"}"
@@ -465,7 +383,7 @@ class MainActivity : Activity() {
         } else {
             twoLine(
                 "Version $version",
-                "Android turns accessibility off on some updates. To have it come back on by itself, run once with the phone on USB:\nadb shell pm grant $packageName android.permission.WRITE_SECURE_SETTINGS",
+                "Android turns accessibility off after some updates. To have it come back on by itself, plug in the phone and run this once:\nadb shell pm grant $packageName android.permission.WRITE_SECURE_SETTINGS",
             )
         }
     }
@@ -504,15 +422,15 @@ class MainActivity : Activity() {
             val o = org.json.JSONObject(f.readText())
             config.proxyUrl = o.getString("url")
             config.deviceToken = o.getString("token")
-            toast("Brain settings imported")
-        }.onFailure { toast("brain.json unreadable: ${it.message}") }
+            toast("Proxy settings imported")
+        }.onFailure { toast("Couldn't read brain.json: ${it.message}") }
         f.delete()
         return true
     }
 
     private fun testConnection() {
         save()
-        if (!config.brainConfigured) return showConnection("Enter the brain URL and device token first", Palette.BAD)
+        if (!config.brainConfigured) return showConnection("Fill in the proxy link and device token first", Palette.BAD)
         showConnection("Testing…", Palette.TEXT_2)
         thread {
             val (msg, color) = runCatching {
@@ -522,7 +440,7 @@ class MainActivity : Activity() {
                 ) to Palette.GOOD
             }.getOrElse {
                 val rejected = it is com.autodate.brain.BrainError && it.status in listOf(401, 403)
-                (if (rejected) "Brain reached, but it rejected the device token" else "Can't reach the brain: ${it.message}") to Palette.BAD
+                (if (rejected) "Reached the proxy, but it rejected that token" else "Can't reach the proxy: ${it.message}") to Palette.BAD
             }
             runOnUiThread { showConnection(msg, color) }
         }
@@ -532,15 +450,15 @@ class MainActivity : Activity() {
 
     private fun setBudget() {
         save()
-        if (!config.brainConfigured) return showResult(budgetResult, "Enter the brain URL and device token first", Palette.BAD)
+        if (!config.brainConfigured) return showResult(budgetResult, "Fill in the proxy link and device token first", Palette.BAD)
         val usd = budgetField.text.toString().trim().removePrefix("\$").toDoubleOrNull()
-        if (usd == null || usd <= 0) return showResult(budgetResult, "Enter an amount in dollars, like 5", Palette.BAD)
+        if (usd == null || usd <= 0) return showResult(budgetResult, "Put in a dollar amount, like 5", Palette.BAD)
         showResult(budgetResult, "Saving…", Palette.TEXT_2)
         thread {
             val (msg, color) = runCatching {
                 val set = com.autodate.brain.BrainClient(config).setBudget(usd).getDouble("max_daily_usd")
                 "✓ Daily budget is now \$%.2f".format(set) to Palette.GOOD
-            }.getOrElse { "Couldn't set it: ${it.message}" to Palette.BAD }
+            }.getOrElse { "Couldn't save it: ${it.message}" to Palette.BAD }
             runOnUiThread {
                 showResult(budgetResult, msg, color)
                 refresh()
@@ -632,10 +550,7 @@ class MainActivity : Activity() {
             setPadding(dp(14), dp(12), dp(14), dp(12))
             background = Palette.rounded(Palette.SURFACE, dp(16).toFloat(), Palette.BORDER, dp(1))
             layoutParams = spaced(12)
-            addView(text("■", 14f, Palette.ACCENT, bold = true).apply {
-                gravity = Gravity.CENTER
-                background = Palette.rounded(Palette.ACCENT_SOFT, dp(14).toFloat())
-            }, LinearLayout.LayoutParams(dp(28), dp(28)))
+            addView(com.autodate.ui.PauseIcon(context), LinearLayout.LayoutParams(dp(32), dp(32)))
             addView(text(twoLine("Stop any time", "Tap the floating bubble, press volume-down, or touch the screen."), 14f, Palette.TEXT, bold = false).apply {
                 setLineSpacing(dp(2).toFloat(), 1f)
             }, LinearLayout.LayoutParams(0, -2, 1f).apply { marginStart = dp(12) })
@@ -650,7 +565,7 @@ class MainActivity : Activity() {
                 addView(LinearLayout(context).apply {
                     orientation = LinearLayout.VERTICAL
                     addView(text(greeting(), 15f, Palette.TEXT_2))
-                    addView(text("autoDate", 28f, Palette.TEXT, bold = true))
+                    addView(text("Proxy Swiper", 28f, Palette.TEXT, bold = true))
                 }, LinearLayout.LayoutParams(0, -2, 1f))
                 addView(servicePill)
             })
@@ -685,7 +600,7 @@ class MainActivity : Activity() {
         if (packageManager.getLaunchIntentForPackage(HINGE) == null) add(Triple("Install Hinge", "Get it") {
             runCatching { startActivity(Intent(Intent.ACTION_VIEW, android.net.Uri.parse("market://details?id=$HINGE"))) }
         })
-        if (!serviceEnabled()) add(Triple("Turn on autoDate in Accessibility", "Show me") { openGuide("access") })
+        if (!serviceEnabled()) add(Triple("Turn on Proxy Swiper in Accessibility", "Show me") { openGuide("access") })
         if (!config.brainConfigured) add(Triple("Connect your proxy", "Connect") { openGuide("brain") })
         else if (brainReachable == false) add(Triple("Can't reach your proxy", "Fix") { openGuide("brain") })
     }
@@ -729,7 +644,7 @@ class MainActivity : Activity() {
                 orb.state = com.autodate.ui.StartOrb.State.RUNNING
                 orb.label = "Stop"
                 orb.sublabel = "Session running"
-                orbHint.text = "autoDate is using Hinge right now."
+                orbHint.text = "It's using Hinge right now."
             }
             !ready -> {
                 orb.state = com.autodate.ui.StartOrb.State.BLOCKED
@@ -757,9 +672,9 @@ class MainActivity : Activity() {
             }
         }
         servicePill.text = when {
-            running -> "● Running"
+            running -> "Running"
             !ready -> "Setup needed"
-            else -> "● Ready"
+            else -> "Ready"
         }
         val good = running || ready
         servicePill.setTextColor(if (good) Palette.GOOD else Palette.ACCENT)
@@ -773,13 +688,13 @@ class MainActivity : Activity() {
                 orb.postDelayed(::refresh, 500)
             }
             com.autodate.ui.StartOrb.State.BLOCKED ->
-                if (setupMissing().isNotEmpty()) setupMissing().first().third() else toast("Out of likes for today. Hinge resets them at midnight.")
+                if (setupMissing().isNotEmpty()) setupMissing().first().third() else toast("Out of likes for today. Hinge gives you more at midnight.")
             com.autodate.ui.StartOrb.State.READY -> startSession()
         }
     }
 
     private fun refresh() {
-        notifyStatus.text = if (com.autodate.notify.Unread.accessGranted(this)) "✓ On" else "Off: tap Notification access and turn on autoDate"
+        notifyStatus.text = if (com.autodate.notify.Unread.accessGranted(this)) "✓ On" else "Off. Tap Notification access and turn on Proxy Swiper"
         val (files, bytes) = CaptureStore.stats(this)
         capturesInfo.text = "Stored captures: $files files · %.1f MB".format(bytes / 1_048_576.0)
         appInfo.text = appInfoText()
@@ -828,7 +743,7 @@ class MainActivity : Activity() {
     private fun startSession() {
         save()
         val hinge = packageManager.getLaunchIntentForPackage(HINGE) ?: return toast("Hinge isn't installed")
-        val service = AgentService.instance ?: return toast("Turn on the autoDate accessibility service first")
+        val service = AgentService.instance ?: return toast("Turn on Proxy Swiper in Accessibility first")
         // Learn and Record have no session: they watch whenever Hinge is open, so just open it.
         if (config.mode.drives) service.startSession()?.let { return toast(it) }
         else service.idleStatus()
@@ -855,7 +770,7 @@ class MainActivity : Activity() {
     private fun confirmDelete() {
         AlertDialog.Builder(this)
             .setTitle("Delete captures & images?")
-            .setMessage("Captured screens and saved profile images contain other people's profiles. Your labels and decisions (text) are kept.")
+            .setMessage("Saved screens and photos have other people's profiles in them. Your ratings and swipe history (text only) stay.")
             .setPositiveButton("Delete") { _, _ ->
                 CaptureStore.deleteAll(this)
                 showResult(dataResult, "✓ Captures and images deleted", Palette.GOOD)
@@ -1031,22 +946,22 @@ class MainActivity : Activity() {
 
         val HELP = listOf(
             "First time" to """
-                Settings → App → Replay the setup guide walks through every step with animations. In short:
-                1. Android 13+: Settings → Apps → autoDate → ⋮ → Allow restricted settings.
-                2. Accessibility → autoDate → Use autoDate → Allow.
-                3. Paste the server link and access code above, then Test connection.
+                Settings → App → Replay the setup guide walks you through it with animations. Short version:
+                1. Android 13+: Settings → Apps → Proxy Swiper → ⋮ → Allow restricted settings.
+                2. Accessibility → Proxy Swiper → Use Proxy Swiper → Allow.
+                3. Paste your proxy link and device token above, then Test connection.
             """,
             "Modes" to """
-                • Learn: tap Open Hinge and swipe as usual. Each like/skip you make is saved, and the bubble shows whether the AI agreed. The bubble is red while the screen is being read and green once it has been, so move on when it turns green. Tap the bubble to ask the AI about the profile on screen. See every result on the History tab.
-                • Co-pilot: tap Start. The AI drives; each like shows a card to approve, edit or skip.
-                • Autopilot: tap Start. The AI drives within your limits.
-                • Record: tap Open Hinge and browse; the REC bubble records screens. Export and send for analysis.
+                • Learn: tap Open Hinge and swipe like normal. Every like and skip gets saved, and the bubble shows whether the AI agreed. The bubble is red while it's reading the screen and green once it's done, so move on when it's green. Tap the bubble to ask the AI about the profile on screen. Everything shows up on the History tab.
+                • Co-pilot: tap Start. It swipes, and each like shows a card so you can send, edit or skip.
+                • Autopilot: tap Start. It swipes and sends on its own, within your limits.
+                • Record: tap Open Hinge and browse. The REC bubble saves screens so you can fix button matching.
             """,
-            "Offline review" to """
-                The Review tab shows profiles whose screenshots autoDate saved. Rate only your private physical attraction, or Face unclear, and add optional type notes. Your Hinge swipe is not the physical label. Review works offline; nothing is sent to the AI.
+            "Review" to """
+                The Review tab shows faces from profiles it saved. Rate how attracted you are, or Face unclear, and add type notes if you want. This is separate from your Hinge swipe. It all stays on the phone until it's used as an example.
             """,
             "Stopping" to """
-                Tap the bubble, press volume-down, or touch the screen. The session stops immediately. Tap the bubble again to resume.
+                Tap the bubble, press volume-down, or touch the screen. It stops right away. Tap the bubble again to pick back up.
             """,
         )
     }

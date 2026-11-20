@@ -1,4 +1,4 @@
-# autoDate
+# Proxy Swiper
 
 An Android app that swipes Hinge for you. It reads each profile, decides like or skip based on what you're looking for, picks the photo or prompt to like, and writes a short comment that sounds like you. Once someone replies, you take over.
 
@@ -13,7 +13,7 @@ this project has a low chance of being maintained because I hate the hinge app
   <tr>
     <td><img src="docs/screenshots/mode.png" width="200" alt="Choosing a mode"></td>
     <td><img src="docs/screenshots/done.png" width="200" alt="Setup done"></td>
-    <td><img src="docs/screenshots/home.png" width="200" alt="Home screen"></td>
+    <td><img src="docs/screenshots/notifications.png" width="200" alt="Notifications"></td>
   </tr>
 </table>
 
@@ -35,8 +35,8 @@ Hinge's terms don't allow automation, so the worst case is a permanent ban on yo
 **1. Run the proxy** on your computer:
 
 ```sh
-git clone https://github.com/umich2021/autodate-friends.git
-cd autodate-friends/proxy
+git clone https://github.com/umich2021/proxy-swiper.git
+cd proxy-swiper/proxy
 npm install
 npm install -g @anthropic-ai/claude-code && claude auth login   # if you're using Claude
 npm run local
@@ -82,7 +82,7 @@ Free Hinge gives about 8 likes a day, which is plenty to start.
 - **"Can't reach your proxy."** Is `npm run local` still running? Same Wi-Fi? Is the firewall letting port 8787 through?
 - **"It rejected that token."** Copy the whole `DEVICE_TOKEN` from `proxy/.env.local`.
 - **"Can't find the skip button" or "unknown screen."** Hinge changed its layout. [android/README.md](android/README.md) has the fix.
-- **Samsung or Xiaomi keeps killing it.** Turn off battery optimization for autoDate. On Samsung, add it to Never sleeping apps.
+- **Samsung or Xiaomi keeps killing it.** Turn off battery optimization for Proxy Swiper. On Samsung, add it to Never sleeping apps.
 
 ## Changing it
 

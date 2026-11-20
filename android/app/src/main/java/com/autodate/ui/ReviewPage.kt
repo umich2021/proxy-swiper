@@ -36,7 +36,7 @@ class ReviewPage(context: Context) : LinearLayout(context) {
     private var rendering = false
 
     private val summary = text("", 14f, Palette.TEXT_2)
-    private val empty = text("No saved profile photos yet. Swipe in Learn mode or review a like in Co-pilot mode first. Photos are kept for 30 days.", 15f, Palette.TEXT_2)
+    private val empty = text("No saved profile photos yet. Swipe in Learn mode or review a like in Co-pilot first. Photos get deleted after 30 days.", 15f, Palette.TEXT_2)
     private val content = LinearLayout(context).apply { orientation = VERTICAL }
     private val profileName = text("", 20f, Palette.TEXT, bold = true)
     private val position = text("", 13f, Palette.TEXT_2)
@@ -167,7 +167,7 @@ class ReviewPage(context: Context) : LinearLayout(context) {
         val p = row.profile
         profileName.text = p.name.ifBlank { "(no name)" }
         position.text = "${index + 1} of ${rows.size}"
-        actual.text = "Physical review only · your Hinge swipe is not the label"
+        actual.text = "Just looks here · separate from your Hinge swipe"
         notes.setText(p.note.orEmpty())
         imageIndex = 0
         band = bandFor(p.physical)
@@ -213,7 +213,7 @@ class ReviewPage(context: Context) : LinearLayout(context) {
     private fun updateSummary() {
         val reviewed = rows.count { complete(it.profile) }
         summary.text = if (rows.isEmpty()) {
-            "Offline review · no API calls"
+            "Stays on your phone · no AI calls"
         } else {
             "$reviewed rated · about 40 is enough · ${rows.size} saved"
         }

@@ -19,7 +19,7 @@ Ways to keep it low key:
 
 ## Privacy
 
-- Accessibility can read anything on screen. autoDate only works inside Hinge, but turn it off when you're not using it if that bugs you
+- Accessibility can read anything on screen. Proxy Swiper only works inside Hinge, but turn it off when you're not using it if that bugs you
 - Other people's photos and profiles go to whichever AI you picked, through your proxy. Saved photos on the phone are deleted after 30 days. The proxy logs token counts and costs, not photos or profile text
 - Exports from Settings → Data have other people's profiles in them. Don't share them, commit them, or attach them to issues
 

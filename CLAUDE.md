@@ -1,4 +1,4 @@
-# autoDate
+# Proxy Swiper
 
 Android agent for Hinge + a Claude-backed proxy. Overview in [README.md](README.md).
 

@@ -89,7 +89,7 @@ class CaptureStore private constructor(private val dir: File) {
             val values = ContentValues().apply {
                 put(MediaStore.MediaColumns.DISPLAY_NAME, name)
                 put(MediaStore.MediaColumns.MIME_TYPE, "application/zip")
-                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/autoDate")
+                put(MediaStore.MediaColumns.RELATIVE_PATH, Environment.DIRECTORY_DOWNLOADS + "/ProxySwiper")
             }
             val resolver = context.contentResolver
             val uri = resolver.insert(MediaStore.Downloads.EXTERNAL_CONTENT_URI, values)
@@ -108,7 +108,7 @@ class CaptureStore private constructor(private val dir: File) {
                     }
                 }
             }
-            return "Download/autoDate/$name"
+            return "Download/ProxySwiper/$name"
         }
     }
 }
