@@ -14,7 +14,7 @@ export type Preferences = {
   /** Where dates would happen, for "let's do this" comments. Default San Francisco. */
   city?: string;
   /** Who the profiles are: "women" (default), "men" or "people". Sets the pronouns in the prompts. */
-  matches?: "women" | "men" | "people";
+  matches?: string;
   [k: string]: unknown;
 };
 
@@ -24,7 +24,7 @@ export type Preferences = {
  */
 function localize(text: string, p: Preferences): string {
   const city = p.city?.trim();
-  const who = p.matches ?? "women";
+  const who = p.matches === "men" || p.matches === "people" ? p.matches : "women";
   const [subj, obj, poss] = who === "men" ? ["he", "him", "his"] : who === "people" ? ["they", "them", "their"] : ["she", "her", "her"];
   const cap = (w: string) => w[0].toUpperCase() + w.slice(1);
   let out = text;
