@@ -13,7 +13,7 @@ this project has a low chance of being maintained because I hate the hinge app
   <tr>
     <td><img src="docs/screenshots/mode.png" width="200" alt="Choosing a mode"></td>
     <td><img src="docs/screenshots/done.png" width="200" alt="Setup done"></td>
-    <td><img src="docs/screenshots/notifications.png" width="200" alt="Notifications"></td>
+    <td><img src="docs/screenshots/home.png" width="200" alt="Home screen"></td>
   </tr>
 </table>
 
