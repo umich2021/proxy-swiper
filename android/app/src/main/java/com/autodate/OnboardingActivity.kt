@@ -299,8 +299,9 @@ class OnboardingActivity : Activity() {
             title("How it works"),
             label("Tap Start and it opens Hinge. Then for every profile it:", 16f, Palette.TEXT_2).mt(8),
             step(StepIllustration.Kind.READ, "1", "Reads the profile", "Scrolls the photos and prompts at human speed (not bot speed)."),
-            step(StepIllustration.Kind.DECIDE, "2", "Scores the match", "Claude scores it against your preferences. Under your bar, it skips."),
+            step(StepIllustration.Kind.DECIDE, "2", "Scores the match", "The AI scores it against your preferences. Under your bar, it skips."),
             step(StepIllustration.Kind.WRITE, "3", "Writes a comment", "Likes the best photo or prompt with a short line in your voice."),
+            step(StepIllustration.Kind.TYPE, "4", "Learns your type", "Rate faces 1 to 10 on the Review tab (just for you). It learns what you find attractive, separate from the general looks score."),
             card(
                 label(bold("It learns from you. " to true, "Start in Learn mode. You swipe, it watches and guesses. Once it agrees with you most of the time, let it drive." to false), 14f),
                 fill = Palette.ACCENT_SOFT,
@@ -387,7 +388,7 @@ class OnboardingActivity : Activity() {
 
         val view = column(
             title("Connect your proxy"),
-            label("Claude judges each profile and writes the comments. It goes through your own copy of the proxy (proxy/ in the repo), which holds your Claude access, preferences, and voice samples.", 16f, Palette.TEXT_2).mt(8),
+            label("The AI (Claude, ChatGPT, Grok or Kimi) judges each profile and writes the comments. It goes through your own copy of the proxy (proxy/ in the repo), which holds your AI access, preferences, and voice samples.", 16f, Palette.TEXT_2).mt(8),
             card(
                 label(bold("No proxy yet? " to true, "Follow proxy/README.md. " to false, "npm run local" to true, " prints the link and the token. On Cloudflare it's the DEVICE_TOKEN you set with wrangler secret put." to false), 14f),
                 fill = Palette.ACCENT_SOFT,
@@ -522,6 +523,7 @@ class OnboardingActivity : Activity() {
                 stepLine("2", bold("A " to false, "floating bubble" to true, " shows what it's doing and how many likes are left. Drag it anywhere." to false), top = 14),
                 stepLine("3", bold("To stop, " to false, "tap the bubble or press volume-down." to true) , top = 14),
                 stepLine("4", "Check History to see every decision and why.", top = 14),
+                stepLine("5", bold("Rate faces on the " to false, "Review" to true, " tab now and then. The more you rate, the better it gets your type." to false), top = 14),
             ).mt(20),
         )
         return Page("done", view, primary = { "Go to Home" to ::finishOnboarding }, counted = false)

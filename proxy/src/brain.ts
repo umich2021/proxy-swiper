@@ -26,7 +26,7 @@ export type CallResult<T> = {
   limits?: Entry["limits"];
 };
 
-/** Something that can run one structured-output request: the Anthropic API, OpenRouter or Claude Code (Max). */
+/** Something that can run one structured-output request: Claude Code or Codex on a subscription, or a pay-per-token API. */
 export interface Backend {
   readonly name: Entry["backend"];
   call<T>(req: CallRequest): Promise<CallResult<T>>;
@@ -111,7 +111,7 @@ export class Brain {
   private async run<T>(endpoint: Entry["endpoint"], req: CallRequest) {
     const res = await this.backend.call<T>(req);
     const listUsd = costOf(this.prices, res.model, res.usage);
-    const actualUsd = this.backend.name === "claude-code" ? 0 : listUsd;
+    const actualUsd = this.backend.name === "claude-code" || this.backend.name === "codex" ? 0 : listUsd;
     await this.ledger.record({
       ts: Date.now(), day: this.today(), endpoint, backend: this.backend.name, model: res.model,
       usage: res.usage, actualUsd, listUsd, durationMs: res.durationMs, limits: res.limits,

@@ -5,10 +5,10 @@ export type Entry = {
   ts: number;
   day: string; // YYYY-MM-DD
   endpoint: "judge" | "prefilter" | "opener" | "comment";
-  backend: "api" | "openrouter" | "claude-code";
+  backend: "api" | "openrouter" | "claude-code" | "codex" | "openai" | "xai" | "kimi";
   model: string;
   usage: Usage;
-  /** What you were billed: API list price on the pay-per-token backends, 0 on Max (claude-code). */
+  /** What you were billed: API list price on the pay-per-token backends, 0 on the subscription backends (claude-code, codex). */
   actualUsd: number;
   /** What this call would cost at API list price for the model that ran it. */
   listUsd: number;

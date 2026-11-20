@@ -5,6 +5,8 @@ import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { AnthropicBackend } from "./backends/anthropic";
 import { ClaudeCodeBackend } from "./backends/claudeCode";
+import { CodexBackend } from "./backends/codex";
+import { OpenAICompatibleBackend, PROVIDERS, type ProviderName } from "./backends/openaiCompatible";
 import { OpenRouterBackend } from "./backends/openrouter";
 import { type Backend, Brain } from "./brain";
 import { handle } from "./handler";
@@ -13,14 +15,19 @@ import { priceTable } from "./pricing";
 import { makePrompts } from "./prompts";
 
 /**
- * The brain server on your own computer. BACKEND=claude-code (default) runs every request through
- * Claude Code with your Claude subscription; BACKEND=api uses ANTHROPIC_API_KEY; BACKEND=openrouter uses OPENROUTER_API_KEY. Every call is
+ * The brain server on your own computer. BACKEND picks the model access:
+ *   claude-code (default)  Claude Code on your Claude subscription
+ *   codex                  Codex CLI on your ChatGPT plan
+ *   api                    ANTHROPIC_API_KEY
+ *   openai / xai / kimi    OPENAI_API_KEY / XAI_API_KEY / MOONSHOT_API_KEY (pay per token)
+ *   openrouter             OPENROUTER_API_KEY, any model OpenRouter has
+ * Every call is
  * appended to data/ledger.jsonl so `npm run costs` can show what it cost or would have cost.
  */
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const envFile = join(root, ".env.local");
 
-const SETTINGS = ["BACKEND", "PORT", "DEVICE_TOKEN", "ANTHROPIC_API_KEY", "OPENROUTER_API_KEY", "MAX_DAILY_USD", "JUDGE_MODEL", "PREFILTER_MODEL", "EFFORT"];
+const SETTINGS = ["BACKEND", "PORT", "DEVICE_TOKEN", "ANTHROPIC_API_KEY", "OPENROUTER_API_KEY", "OPENAI_API_KEY", "XAI_API_KEY", "MOONSHOT_API_KEY", "MAX_DAILY_USD", "JUDGE_MODEL", "PREFILTER_MODEL", "EFFORT"];
 
 /** Settings from proxy/.env.local, overridden by the same names in the shell environment. */
 export function loadEnv(): Record<string, string> {
@@ -102,8 +109,20 @@ function main() {
   } else if (backendName === "openrouter") {
     if (!env.OPENROUTER_API_KEY) throw new Error("BACKEND=openrouter needs OPENROUTER_API_KEY in proxy/.env.local");
     backend = new OpenRouterBackend(env.OPENROUTER_API_KEY, effort);
-  } else {
+  } else if (backendName === "codex") {
+    backend = new CodexBackend(effort);
+  } else if (backendName in PROVIDERS) {
+    const provider = backendName as ProviderName;
+    const key = env[PROVIDERS[provider].keyVar];
+    if (!key) throw new Error(`BACKEND=${provider} needs ${PROVIDERS[provider].keyVar} in proxy/.env.local`);
+    if (!env.JUDGE_MODEL || !env.PREFILTER_MODEL) {
+      throw new Error(`BACKEND=${provider} needs JUDGE_MODEL and PREFILTER_MODEL in proxy/.env.local (a model that reads images, and a cheaper one)`);
+    }
+    backend = new OpenAICompatibleBackend(provider, key, effort);
+  } else if (backendName === "claude-code") {
     backend = new ClaudeCodeBackend(effort);
+  } else {
+    throw new Error(`Unknown BACKEND=${backendName}. Use claude-code, codex, api, openai, xai, kimi or openrouter`);
   }
   const { prompts, prices } = loadConfig();
   const ledger = new FileLedger(ledgerFile);

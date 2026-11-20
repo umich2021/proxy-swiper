@@ -303,7 +303,7 @@ class SwipeDemoView(context: Context) : LoopView(context, 3400, stillAt = 0.42f)
 
 /** The three "how it works" steps, one per kind. */
 class StepIllustration(context: Context, private val kind: Kind) : LoopView(context, 2800, stillAt = 0.7f) {
-    enum class Kind { READ, DECIDE, WRITE }
+    enum class Kind { READ, DECIDE, WRITE, TYPE }
 
     override fun draw(c: Canvas, w: Float, h: Float) {
         fill(Palette.ACCENT_SOFT)
@@ -312,6 +312,7 @@ class StepIllustration(context: Context, private val kind: Kind) : LoopView(cont
             Kind.READ -> read(c, w, h)
             Kind.DECIDE -> decide(c, w, h)
             Kind.WRITE -> write(c, w, h)
+            Kind.TYPE -> type(c, w, h)
         }
     }
 
@@ -388,6 +389,41 @@ class StepIllustration(context: Context, private val kind: Kind) : LoopView(cont
                 c.drawCircle(r - dp(2f), b + dp(6f), dp(8f) * overshoot(sent), p)
                 check(c, r - dp(2f), b + dp(6f), dp(4.5f), Palette.GOOD, dp(2f), seg(t, 0.82f, 0.95f))
             }
+        }
+    }
+
+    /** Review tab: a saved face gets a private 1-10 rating, which becomes part of "your type". */
+    private fun type(c: Canvas, w: Float, h: Float) {
+        val swap = seg(t, 0.82f, 0.95f)
+        val l = w * 0.3f; val r = w * 0.7f; val tp = h * 0.1f; val b = h * 0.6f
+        c.save()
+        c.translate(-swap * w * 0.6f, 0f)
+        profileCard(c, l, tp, r, b, 3 + cycle, dp(8f))
+        c.restore()
+        if (swap > 0f) {
+            c.save()
+            c.translate((1 - swap) * w * 0.6f, 0f)
+            profileCard(c, l, tp, r, b, 4 + cycle, dp(8f))
+            c.restore()
+        }
+        // ten dots fill up to the rating
+        val rating = 6 + cycle % 4
+        val dot = dp(3.2f); val gap = (w * 0.8f) / 10
+        val y = h * 0.72f
+        for (i in 0 until 10) {
+            val on = seg(t, 0.1f + i * 0.04f, 0.14f + i * 0.04f) > 0f && i < rating && swap == 0f
+            fill(if (on) Palette.ACCENT else 0xFFF0C6D5.toInt())
+            c.drawCircle(w * 0.1f + gap * (i + 0.5f), y, if (on) dot * 1.25f else dot, p)
+        }
+        val tag = seg(t, 0.55f, 0.65f) * (1 - swap)
+        if (tag > 0f) {
+            val s = overshoot(tag)
+            c.save()
+            c.scale(s, s, w / 2, h * 0.87f)
+            fill(Palette.ACCENT)
+            round(w / 2 - dp(30f), h * 0.87f - dp(9f), w / 2 + dp(30f), h * 0.87f + dp(9f), dp(9f), p, c)
+            text(c, "$rating/10 · you", w / 2, h * 0.87f + sp(3.5f), sp(9.5f), 0xFFFFFFFF.toInt(), bold = true, align = Paint.Align.CENTER)
+            c.restore()
         }
     }
 
