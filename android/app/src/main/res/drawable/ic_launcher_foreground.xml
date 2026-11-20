@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The status bubble in its green "read" state: a heart and a check. Shrunk to fit launcher masks. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <group
+        android:pivotX="54"
+        android:pivotY="54"
+        android:scaleX="0.85"
+        android:scaleY="0.85">
+        <path
+            android:fillColor="#FFFFFF"
+            android:pathData="M37 37H71A17 17 0 0 1 71 71H37A17 17 0 0 1 37 37Z"
+            android:strokeColor="#1E7B34"
+            android:strokeWidth="4" />
+        <group
+            android:scaleX="0.3"
+            android:scaleY="0.3"
+            android:translateX="39"
+            android:translateY="54">
+            <group
+                android:translateX="-54"
+                android:translateY="-52">
+                <path
+                    android:fillColor="#D6336C"
+                    android:pathData="M54 80C30 64 22 52 22 41C22 31 30 25 38 25C45 25 51 29 54 35C57 29 63 25 70 25C78 25 86 31 86 41C86 52 78 64 54 80Z" />
+            </group>
+        </group>
+        <path
+            android:pathData="M60 54l6 6 11 -12"
+            android:strokeColor="#1E7B34"
+            android:strokeLineCap="round"
+            android:strokeLineJoin="round"
+            android:strokeWidth="5" />
+    </group>
+</vector>

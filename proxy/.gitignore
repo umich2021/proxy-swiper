@@ -1,0 +1,8 @@
+node_modules/
+.wrangler/
+.dev.vars
+.env.local
+data/
+# Your own preferences, facts and voice samples. Templates are in config.example/.
+config/*
+!config/prices.json

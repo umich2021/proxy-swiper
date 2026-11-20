@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Light palette. MainActivity and Overlay use the same values (see ui/Palette.kt). -->
+<resources>
+    <color name="bg">#FFF5F5F7</color>
+    <color name="surface">#FFFFFFFF</color>
+    <color name="text">#FF1C1C1E</color>
+    <color name="text_secondary">#FF6B6B73</color>
+    <color name="accent">#FFD6336C</color>
+</resources>

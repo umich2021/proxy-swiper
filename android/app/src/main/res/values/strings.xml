@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">autoDate</string>
+    <string name="service_description">Reads Hinge\'s screen and, in Approve or Auto mode, taps and types in Hinge for you. Only active inside Hinge. Stop any time by tapping the bubble, pressing volume-down, or touching the screen.</string>
+</resources>

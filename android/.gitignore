@@ -1,0 +1,9 @@
+.gradle/
+build/
+local.properties
+.idea/
+*.iml
+.kotlin/
+
+# Private notes about your own Hinge profile (History tab). Never commit.
+app/src/main/assets/profile_notes.md

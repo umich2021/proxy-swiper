@@ -1,0 +1,67 @@
+# Deploys proxy/ to your own server over SSH whenever it changes on main. Optional: it only runs
+# when the repo variable PROXY_URL is set, so a fork or a Cloudflare-only setup skips it.
+# proxy/config/ is not in git, so this never sends your preferences; copy those to the server by hand
+# (proxy/README.md, "Run on your own server").
+#
+# Repo variable:
+#   PROXY_URL           e.g. https://autodate.example.com, checked after the deploy
+# Repo secrets:
+#   DEPLOY_HOST         server IP or hostname
+#   DEPLOY_SSH_KEY      private key of a deploy-only key pair (its public key is in the server's authorized_keys)
+#   DEPLOY_KNOWN_HOSTS  output of `ssh-keyscan <host>`, so the runner can verify it's really your server
+name: Deploy proxy
+
+on:
+  push:
+    branches: [main]
+    paths: ["proxy/**", ".github/workflows/deploy-proxy.yml"]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-proxy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: vars.PROXY_URL != ''
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: proxy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: proxy/package-lock.json
+
+      # Catch a broken edit before it reaches the server.
+      - name: Check config and code
+        run: |
+          for f in config/*.json; do node -e "JSON.parse(require('fs').readFileSync('$f','utf8'))" || { echo "Invalid JSON: $f"; exit 1; }; done
+          npm ci
+          npm run typecheck
+
+      - name: Copy to server and rebuild
+        env:
+          SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          KNOWN_HOSTS: ${{ secrets.DEPLOY_KNOWN_HOSTS }}
+          HOST: ${{ secrets.DEPLOY_HOST }}
+        run: |
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$SSH_KEY" > ~/.ssh/deploy_key && chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "$KNOWN_HOSTS" > ~/.ssh/known_hosts
+          git ls-files . | tar -cf - -T - \
+            | ssh -i ~/.ssh/deploy_key "ubuntu@$HOST" 'tar -xf - -C ~/apps/autodate && cd ~/apps && docker compose up -d --build autodate'
+
+      # Without a token the proxy should answer 401, which means it's up.
+      - name: Check it's live
+        run: |
+          for i in $(seq 1 12); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' ${{ vars.PROXY_URL }}/v1/spend || true)
+            [ "$code" = "401" ] && { echo "Proxy is up"; exit 0; }
+            sleep 5
+          done
+          echo "Proxy didn't come back (last status: $code)"; exit 1

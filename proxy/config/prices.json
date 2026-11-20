@@ -1,0 +1,9 @@
+{
+  "_note": "USD per 1M tokens: [input, output, cache_read, cache_write]. Used to price every logged call and for 'what if it ran on X' comparisons. Claude rates are Anthropic list prices (Oct 2026). GLM rates are from third-party aggregators (Oct 2026); verify at z.ai before relying on them. GLM tokenizes differently and its flagship may not accept images, so treat GLM what-ifs as rough (±30%).",
+  "claude-opus-5-5":   [4.0, 20.0, 0.2, 5.0],
+  "claude-sonnet-5-5": [2.0, 10.0, 0.2, 2.5],
+  "claude-haiku-5-5":  [0.1, 0.5, 0.01, 0.125],
+  "glm-5.3":           [1.4, 4.4, 0.26, 1.4],
+  "glm-4.7":           [0.6, 2.2, 0.6, 0.6],
+  "glm-5.3-flash":     [0.15, 0.5, 0.15, 0.15]
+}

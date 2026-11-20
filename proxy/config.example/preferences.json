@@ -1,0 +1,43 @@
+{
+  "about_me_summary": "TEMPLATE - replace: one or two sentences about you. Age, job, neighborhood, what you do on weekends, what you're looking for.",
+  "ideal_partner": "TEMPLATE - replace: describe the person you want in plain words, with a small example of how they'd act. The more specific, the better the judge gets.",
+  "city": "San Francisco",
+  "matches": "women",
+  "looking_for": {
+    "relationship_intent": [
+      "life partner",
+      "long-term relationship",
+      "long-term, open to short"
+    ],
+    "must_have": [],
+    "strong_plus": [
+      "TEMPLATE - things that make you excited to like someone, e.g. funny prompts that show a real sense of humor"
+    ],
+    "mild_plus": [
+      "TEMPLATE - nice to have, e.g. active, likes cooking"
+    ],
+    "neutral": [
+      "TEMPLATE - things you don't care about either way, so the AI doesn't count them"
+    ],
+    "mild_minus": [
+      "TEMPLATE - small turn-offs, e.g. only group photos"
+    ],
+    "never": [
+      "TEMPLATE - hard no's. Keep them about behavior and intent, e.g. says they're only here for followers"
+    ]
+  },
+  "photo_guidance": "Favor photos that tell a story or give something specific to react to over plain selfies.",
+  "looks": {
+    "min": 5
+  },
+  "thresholds": {
+    "like": 70,
+    "ask_me_below": 55
+  },
+  "skip_if_profile_lists": [],
+  "skip_if_basics": {
+    "Smoking": [
+      "Yes"
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "_readme": "TEMPLATE - replace everything. Only true facts. Comments and openers can mention anything in this file and nothing else, so leave out what you don't want said. Add or remove keys freely; the AI reads the whole file.",
+  "first_name": "Alex",
+  "age": 27,
+  "job": "Designer",
+  "neighborhood": "Your neighborhood, Your City",
+  "hobbies": [
+    "climbing",
+    "cooking"
+  ],
+  "hobby_details": {
+    "climbing": "Bouldering a couple times a week",
+    "cooking": "Hosts dinners for friends most weekends"
+  },
+  "favorites": {
+    "food": "",
+    "music": "",
+    "movie": "",
+    "places": ""
+  },
+  "my_hinge_prompts": {
+    "Prompt title": "Your answer, as it appears on your profile"
+  },
+  "not_into": [
+    "things you never want a message to claim you like"
+  ],
+  "dating_intentions": "Long-term relationship",
+  "how_i_comment": [
+    "optional: notes on how you like to open, e.g. short, a little dry, usually suggest a plan"
+  ]
+}

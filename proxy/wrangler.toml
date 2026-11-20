@@ -1,0 +1,22 @@
+name = "autodate-proxy"
+main = "src/worker.ts"
+compatibility_date = "2026-10-01"
+compatibility_flags = ["nodejs_compat"]
+
+# voice_samples.md is imported as a string.
+rules = [{ type = "Text", globs = ["**/*.md"], fallthrough = true }]
+
+[vars]
+MAX_DAILY_USD = "3"
+JUDGE_MODEL = "claude-opus-5-5"
+PREFILTER_MODEL = "claude-haiku-5-5"
+EFFORT = "low"
+
+# Create with: npx wrangler kv namespace create SPEND   (then paste the id here)
+[[kv_namespaces]]
+binding = "SPEND"
+id = "REPLACE_WITH_KV_NAMESPACE_ID"
+
+# Secrets (not in this file):
+#   npx wrangler secret put ANTHROPIC_API_KEY
+#   npx wrangler secret put DEVICE_TOKEN      # any long random string; paste the same into the app

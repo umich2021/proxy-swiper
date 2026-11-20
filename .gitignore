@@ -1,0 +1,11 @@
+# Capture exports contain other people's profiles and photos. Never commit.
+*.zip
+captures/
+profiles/
+
+.DS_Store
+Thumbs.db
+__pycache__/
+
+# Server details. Never commit.
+SERVER-SETUP.md

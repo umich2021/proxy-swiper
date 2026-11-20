@@ -1,0 +1,28 @@
+{
+  "_note": "Discover-screen rules come from a real Inspect capture (Oct 19, 2026, Hinge on Android 17). The like sheet (Send like, Edit comment) is from an Oct 29 capture; the text box that opens after tapping Edit comment, out_of_likes, match_row_new, chat_* are still GUESSES until those screens are captured. A node matches an element if it matches ALL fields of ANY rule. Regexes are searched; use ^...$ to anchor.",
+  "elements": {
+    "skip_button":    [{ "desc": "(?i)^skip\\b", "flags": ["clickable"] }],
+    "like_button":    [{ "desc": "(?i)^like (photo|prompt|video|voice|poll|answer)", "flags": ["clickable"] }, { "desc": "(?i)^like$", "flags": ["clickable"] }, { "desc": "^Option: " }, { "text": "^Option: " }],
+    "profile_scroller": [{ "cls": "View", "flags": ["scrollable"] }],
+    "basics_row":     [{ "cls": "View", "flags": ["scrollable"] }],
+    "comment_field":  [{ "cls": "EditText", "hint": "(?i)comment" }, { "cls": "EditText", "text": "(?i)add a comment" }, { "desc": "(?i)^(edit|add a) comment$" }],
+    "send_like":      [{ "text": "(?i)^send( a)? like$" }, { "desc": "(?i)^send( a)? like" }],
+    "close_sheet":    [{ "desc": "(?i)^close( sheet)?$" }],
+    "out_of_likes":   [{ "text": "(?i)(out of (free )?likes|no (more )?likes left|you'?re out of likes|new likes in)" }],
+    "discover_tab":   [{ "desc": "^Discover$" }],
+    "standouts_tab":  [{ "desc": "^Standouts$" }],
+    "likes_you_tab":  [{ "desc": "^Likes You$" }],
+    "matches_tab":    [{ "desc": "^Matches$" }],
+    "match_row_new":  [{ "text": "(?i)^your turn$" }, { "text": "(?i)start the chat" }, { "text": "(?i)^new match" }],
+    "chat_input":     [{ "cls": "EditText", "hint": "(?i)(message|send a)" }, { "cls": "EditText" }],
+    "chat_send":      [{ "desc": "(?i)^send$" }, { "text": "(?i)^send$" }],
+    "chat_profile_tab": [{ "text": "(?i)^profile$" }, { "desc": "(?i)^profile$" }],
+    "chat_chat_tab":  [{ "text": "(?i)^chat$" }, { "desc": "(?i)^chat$" }],
+    "back":           [{ "desc": "(?i)^(back|navigate up|go back)$" }],
+    "dismiss":        [
+      { "text": "(?i)^(not now|maybe later|no thanks|got it|skip for now|later|dismiss)$" },
+      { "desc": "(?i)^(close|dismiss)$" }
+    ]
+  },
+  "positions": {}
+}

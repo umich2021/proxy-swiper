@@ -1,0 +1,27 @@
+{
+  "name": "autodate-proxy",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "init-config": "node scripts/init-config.mjs",
+    "predev": "node scripts/init-config.mjs",
+    "dev": "wrangler dev",
+    "predeploy": "node scripts/init-config.mjs",
+    "deploy": "wrangler deploy",
+    "prelocal": "node scripts/init-config.mjs",
+    "local": "tsx src/local.ts",
+    "costs": "tsx src/report.ts",
+    "pretypecheck": "node scripts/init-config.mjs",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "0.135.0"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "5.20261019.1",
+    "@types/node": "24.19.2",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "wrangler": "4.151.2"
+  }
+}
